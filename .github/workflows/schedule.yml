@@ -1,0 +1,61 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Build New Releases When Available
+
+# Controls when the action will run. 
+on:
+  schedule:
+    - cron: '0 * * * *'
+  
+  workflow_dispatch:
+
+env:
+  CARGO_TERM_COLOR: always
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # see if there's a version with no release
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      do_build: ${{ steps.test.outputs.do_build }}
+      latest_version: ${{ steps.test.outputs.latest_version }}
+    
+    steps:
+      - id: test
+        run: |
+          latest_version=$(cargo search pijul | head -1 | grep -Eo '\d+\.\d+\.\d+(-(\w|\.)+)?')
+          echo "::set-output name=latest_version::$latest_version"
+          latest_release=$(curl https://api.github.com/repos/boringcactus/vidslice/releases/latest | jq -r .tag_name)
+          if [ "$latest_version" -ne "$latest_release" ]; then
+            echo "::set-output name=do_build::yes"
+          else
+            echo "::set-output name=do_build::no"
+          fi
+
+  build-windows:
+    runs-on: windows-latest
+    needs: check
+    if: needs.check.outputs.do_build == 'yes'
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      - name: Install vcpkg deps
+        run: |
+          $VCPKG_INSTALLATION_ROOT/vcpkg.exe install --triplet=x64-windows-static-md xxhash zstd openssl openssl-windows
+          cd $VCPKG_INSTALLATION_ROOT/installed/x64-windows-static-md/lib
+          cp zstd_static.lib zstd.lib
+      - name: Build pijul
+        run: |
+          export VCPKG_ROOT=$VCPKG_INSTALLATION_ROOT
+          export LIB=$VCPKG_ROOT/installed/x64-windows-static-md/lib
+          export OPENSSL_DIR=$VCPKG_ROOT/installed/x64-windows-static-md
+          cargo install pijul --version ${{ needs.check.outputs.latest_version }} --root .
+      - name: Upload binary
+        uses: svenstaro/upload-release-action@2.2.1
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          file: bin/pijul.exe
+          tag: ${{ needs.check.outputs.latest_version }}
