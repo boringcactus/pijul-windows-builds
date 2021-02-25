@@ -32,6 +32,9 @@ jobs:
       - name: Run a multi-line script
         run: |
           $Env:VCPKG_ROOT = $Env:VCPKG_INSTALLATION_ROOT
+          $Env:VCPKG_ROOT\vcpkg.exe install --triplet=x64-windows-static-md xxhash zstd openssl openssl-windows
+          $Env:LIB = $Env:VCPKG_ROOT\installed\x64-windows-static-md\lib
+          $Env:OPENSSL_DIR = $Env:VCPKG_ROOT\installed\x64-windows-static-md
           cargo install pijul --version "~1.0.0-alpha" --root .
           ls
       
