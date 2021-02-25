@@ -29,12 +29,13 @@ jobs:
       - uses: actions/checkout@v2
 
       # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      - name: Build
+        shell: bash
         run: |
-          $Env:VCPKG_ROOT = $Env:VCPKG_INSTALLATION_ROOT
-          & $Env:VCPKG_ROOT\vcpkg.exe install --triplet=x64-windows-static-md xxhash zstd openssl openssl-windows
-          $Env:LIB = $Env:VCPKG_ROOT\installed\x64-windows-static-md\lib
-          $Env:OPENSSL_DIR = $Env:VCPKG_ROOT\installed\x64-windows-static-md
+          export VCPKG_ROOT=$VCPKG_INSTALLATION_ROOT
+          VCPKG_ROOT/vcpkg.exe install --triplet=x64-windows-static-md xxhash zstd openssl openssl-windows
+          export LIB=$VCPKG_ROOT/installed/x64-windows-static-md/lib
+          export OPENSSL_DIR=$VCPKG_ROOT/installed/x64-windows-static-md
           cargo install pijul --version "~1.0.0-alpha" --root .
           ls
       
