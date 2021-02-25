@@ -27,19 +27,24 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+      
+      - name: Install vcpkg deps
+        shell: bash
+        run: |
+          $VCPKG_INSTALLATION_ROOT/vcpkg.exe install --triplet=x64-windows-static-md xxhash zstd openssl openssl-windows
+          cd $VCPKG_INSTALLATION_ROOT/installed/x64-windows-static-md/lib
+          cp zstd_static.lib zstd.lib
 
       # Runs a set of commands using the runners shell
-      - name: Build
+      - name: Build pijul
         shell: bash
         run: |
           export VCPKG_ROOT=$VCPKG_INSTALLATION_ROOT
-          $VCPKG_ROOT/vcpkg.exe install --triplet=x64-windows-static-md xxhash zstd openssl openssl-windows
           export LIB=$VCPKG_ROOT/installed/x64-windows-static-md/lib
           export OPENSSL_DIR=$VCPKG_ROOT/installed/x64-windows-static-md
           cargo install pijul --version "~1.0.0-alpha" --root .
-          ls
       
       # Upload the compiled binary
       - uses: actions/upload-artifact@v2
         with:
-          path: pijul.exe
+          path: bin/pijul.exe
