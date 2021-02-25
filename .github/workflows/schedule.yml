@@ -27,7 +27,7 @@ jobs:
           cargo search pijul
           cargo search pijul | head -1
           cargo search pijul | head -1 | grep -Eo '\d+\.\d+\.\d+(-(\w|\.)+)?'
-          latest_version=$(cargo search pijul | head -1 | grep -Eo '\d+\.\d+\.\d+(-(\w|\.)+)?')
+          latest_version=$(cargo search pijul | head -1 | awk -F'"' '{ print $2; }')
           echo "::set-output name=latest_version::$latest_version"
           latest_release=$(curl https://api.github.com/repos/boringcactus/pijul-windows-builds/releases/latest | jq -r .tag_name)
           if [ "$latest_version" -ne "$latest_release" ]; then
