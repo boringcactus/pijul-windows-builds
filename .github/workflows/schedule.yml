@@ -48,8 +48,6 @@ jobs:
       - name: Install vcpkg deps
         run: |
           $VCPKG_INSTALLATION_ROOT/vcpkg.exe install --triplet=x64-windows-static-md xxhash zstd openssl openssl-windows
-          cd $VCPKG_INSTALLATION_ROOT/installed/x64-windows-static-md/lib
-          cp zstd_static.lib zstd.lib
       - name: Build pijul
         run: |
           export VCPKG_ROOT=$VCPKG_INSTALLATION_ROOT
