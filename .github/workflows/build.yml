@@ -26,18 +26,18 @@ jobs:
         run: |
           echo ${VCPKG_ROOT}:
           ls $VCPKG_ROOT
-          echo ${VCPKG_ROOT}/installed:
-          ls $VCPKG_ROOT/installed
-          echo ${VCPKG_ROOT}/installed/x64-windows-static-md:
-          ls $VCPKG_ROOT/installed/x64-windows-static-md
-          echo ${VCPKG_ROOT}/installed/x64-windows-static-md/lib:
-          ls $VCPKG_ROOT/installed/x64-windows-static-md/lib
+          echo ${VCPKG_INSTALLED_DIR}:
+          ls ${VCPKG_INSTALLED_DIR}
+          echo ${VCPKG_INSTALLED_DIR}/x64-windows-static-md:
+          ls ${VCPKG_INSTALLED_DIR}/x64-windows-static-md
+          echo ${VCPKG_INSTALLED_DIR}/x64-windows-static-md/lib:
+          ls ${VCPKG_INSTALLED_DIR}/x64-windows-static-md/lib
 
       - name: Build pijul
         shell: bash
         run: |
-          export LIB=$VCPKG_ROOT/installed/x64-windows-static-md/lib
-          export OPENSSL_DIR=$VCPKG_ROOT/installed/x64-windows-static-md
+          export LIB=${VCPKG_INSTALLED_DIR}/x64-windows-static-md/lib
+          export OPENSSL_DIR=${VCPKG_INSTALLED_DIR}/x64-windows-static-md
           cargo install pijul --version ${{ inputs.version }} --root . --locked
 
       - uses: actions/upload-artifact@v2
