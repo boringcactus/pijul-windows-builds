@@ -16,10 +16,15 @@ runs:
         echo "VCPKG_INSTALLED_DIR=${{ github.workspace }}/vcpkg_installed" | tee -a "$GITHUB_ENV"
         echo "LIB=${{ github.workspace }}/vcpkg_installed/x64-windows-static-md/lib" | tee -a "$GITHUB_ENV"
         echo "OPENSSL_DIR=${{ github.workspace }}/vcpkg_installed/x64-windows-static-md" | tee -a "$GITHUB_ENV"
+        echo "CARGO_TARGET_DIR=${{ github.workspace }}/cargo_target" | tee -a "$GITHUB_ENV"
     - uses: lukka/run-vcpkg@v11
       with:
         vcpkgGitCommitId: "f6a5d4e8eb7476b8d7fc12a56dff300c1c986131"
         runVcpkgInstall: true
+    - name: Cache Cargo target dir
+      uses: actions/cache@v3
+      with:
+        path: ${{ github.workspace }}/cargo_target
     - name: Build pijul
       shell: bash
       run: |
