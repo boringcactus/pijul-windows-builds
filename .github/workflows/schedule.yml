@@ -18,45 +18,39 @@ jobs:
   check:
     runs-on: ubuntu-latest
     outputs:
-      do_build: ${{ steps.test.outputs.do_build }}
-      latest_version: ${{ steps.test.outputs.latest_version }}
+      do-build: ${{ steps.test.outputs.do-build }}
+      latest-version: ${{ steps.check.outputs.latest-version }}
     
     steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: check
+        id: check
+        uses: ./.github/actions/check
       - id: test
         run: |
-          cargo search pijul
-          cargo search pijul | head -1
-          cargo search pijul | head -1 | awk -F'"' '{ print $2; }'
-          latest_version=$(cargo search pijul | head -1 | awk -F'"' '{ print $2; }')
-          echo "latest_version=$latest_version" | tee -a $GITHUB_OUTPUT
+          latest_version="${{ steps.check.outputs.latest-version }}"
           latest_release=$(curl https://api.github.com/repos/boringcactus/pijul-windows-builds/releases/latest | jq -r .tag_name)
           if [ "$latest_version" != "$latest_release" ]; then
-            echo "do_build=yes" | tee -a $GITHUB_OUTPUT
+            echo "do-build=yes" | tee -a $GITHUB_OUTPUT
           else
-            echo "do_build=no" | tee -a $GITHUB_OUTPUT
+            echo "do-build=no" | tee -a $GITHUB_OUTPUT
           fi
 
   build-windows:
     runs-on: windows-latest
     needs: check
-    if: needs.check.outputs.do_build == 'yes'
-    defaults:
-      run:
-        shell: bash
+    if: needs.check.outputs.do-build == 'yes'
 
     steps:
-      - name: Install vcpkg deps
-        run: |
-          $VCPKG_INSTALLATION_ROOT/vcpkg.exe install --triplet=x64-windows-static-md xxhash zstd openssl openssl-windows
-      - name: Build pijul
-        run: |
-          export VCPKG_ROOT=$VCPKG_INSTALLATION_ROOT
-          export LIB=$VCPKG_ROOT/installed/x64-windows-static-md/lib
-          export OPENSSL_DIR=$VCPKG_ROOT/installed/x64-windows-static-md
-          cargo install pijul --version ${{ needs.check.outputs.latest_version }} --root .
-      - name: Upload binary
-        uses: svenstaro/upload-release-action@2.2.1
+      - name: build
+        uses: ./.github/actions/build
+        with:
+          version: ${{ needs.check.outputs.latest-version }}
+      - name: upload
+        uses: svenstaro/upload-release-action@v2
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          file: bin/pijul.exe
-          tag: ${{ needs.check.outputs.latest_version }}
+          file: piju*.exe
+          file_glob: true
+          tag: ${{ needs.check.outputs.latest-version }}
