@@ -28,12 +28,12 @@ jobs:
           cargo search pijul | head -1
           cargo search pijul | head -1 | awk -F'"' '{ print $2; }'
           latest_version=$(cargo search pijul | head -1 | awk -F'"' '{ print $2; }')
-          echo "::set-output name=latest_version::$latest_version"
+          echo "latest_version=$latest_version" | tee -a $GITHUB_OUTPUT
           latest_release=$(curl https://api.github.com/repos/boringcactus/pijul-windows-builds/releases/latest | jq -r .tag_name)
           if [ "$latest_version" != "$latest_release" ]; then
-            echo "::set-output name=do_build::yes"
+            echo "do_build=yes" | tee -a $GITHUB_OUTPUT
           else
-            echo "::set-output name=do_build::no"
+            echo "do_build=no" | tee -a $GITHUB_OUTPUT
           fi
 
   build-windows:
