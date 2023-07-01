@@ -2,6 +2,7 @@ name: Build
 description: "Builds the given Pijul version"
 inputs:
   version:
+    description: "Pijul version to build"
     required: true
     type: string
 runs:
