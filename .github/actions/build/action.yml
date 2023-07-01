@@ -13,7 +13,6 @@ runs:
         echo "CARGO_TERM_COLOR=always" | tee -a "$GITHUB_ENV"
         echo "VCPKG_DEFAULT_TRIPLET=x64-windows-static-md" | tee -a "$GITHUB_ENV"
         echo "VCPKG_INSTALLED_DIR=${{ github.workspace }}/vcpkg_installed" | tee -a "$GITHUB_ENV"
-    - uses: actions/checkout@v3
     - uses: lukka/run-vcpkg@v11
       with:
         vcpkgGitCommitId: "f6a5d4e8eb7476b8d7fc12a56dff300c1c986131"
