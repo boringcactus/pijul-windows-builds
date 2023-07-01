@@ -26,7 +26,7 @@ jobs:
           export VCPKG_ROOT=$VCPKG_INSTALLATION_ROOT
           export LIB=$VCPKG_ROOT/installed/x64-windows-static-md/lib
           export OPENSSL_DIR=$VCPKG_ROOT/installed/x64-windows-static-md
-          cargo install pijul --version ${{ inputs.version }} --root .
+          cargo install pijul --version ${{ inputs.version }} --root . --locked
 
       - uses: actions/upload-artifact@v2
         with:
