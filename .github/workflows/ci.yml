@@ -9,17 +9,16 @@ jobs:
   check:
     runs-on: ubuntu-latest
     outputs:
-      do_build: ${{ steps.test.outputs.do_build }}
-      latest_version: ${{ steps.test.outputs.latest_version }}
+      latest-version: ${{ steps.check.outputs.latest-version }}
 
     steps:
-      - id: test
-        run: |
-          latest_version=$(curl https://raw.githubusercontent.com/rust-lang/crates.io-index/master/pi/ju/pijul | jq --slurp '.[-1].vers' --raw-output)
-          echo "latest_version=$latest_version" | tee -a $GITHUB_OUTPUT
+      - id: check
+        uses: ./.github/actions/check
 
   build:
     needs: check
-    uses: ./.github/workflows/build.yml
-    with:
-      version: ${{ needs.check.outputs.latest_version }}
+    runs-on: windows-latest
+    steps:
+      - uses: ./.github/actions/build
+        with:
+          version: ${{ needs.check.outputs.latest-version }}

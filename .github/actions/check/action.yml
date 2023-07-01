@@ -1,0 +1,14 @@
+name: "Check Latest Version"
+description: "Checks the latest Pijul version"
+outputs:
+  latest-version:
+    description: "Latest Pijul version"
+    value: ${{ steps.get.outputs.latest-version }}
+runs:
+  using: "composite"
+  steps:
+    - id: test
+      shell: bash
+      run: |
+        latest_version=$(curl https://raw.githubusercontent.com/rust-lang/crates.io-index/master/pi/ju/pijul | jq --slurp '.[-1].vers' --raw-output)
+        echo "latest-version=$latest_version" | tee -a $GITHUB_OUTPUT

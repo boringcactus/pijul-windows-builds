@@ -9,11 +9,20 @@ on:
         default: "~1.0.0-beta"
         type: string
 
-env:
-  CARGO_TERM_COLOR: always
-
 jobs:
   build:
-    uses: ./.github/workflows/build.yml
-    with:
-      version: ${{ inputs.version }}
+    runs-on: windows-latest
+
+    steps:
+      - uses: ./.github/actions/build
+        with:
+          version: ${{ inputs.version }}
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: pijul.exe
+          path: pijul.exe
+      - uses: actions/upload-artifact@v2
+        with:
+          name: pijul-with-git.exe
+          path: pijul-with-git.exe

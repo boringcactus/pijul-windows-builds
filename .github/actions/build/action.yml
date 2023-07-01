@@ -1,0 +1,34 @@
+name: Build
+description: "Builds the given Pijul version"
+inputs:
+  version:
+    required: true
+    type: string
+runs:
+  using: "composite"
+  steps:
+    - name: Set up environment
+      shell: bash
+      run: |
+        echo "CARGO_TERM_COLOR=always" | tee -a "$GITHUB_ENV"
+        echo "VCPKG_DEFAULT_TRIPLET=x64-windows-static-md" | tee -a "$GITHUB_ENV"
+        echo "VCPKG_INSTALLED_DIR=${{ github.workspace }}/vcpkg_installed" | tee -a "$GITHUB_ENV"
+    - uses: actions/checkout@v3
+    - uses: lukka/run-vcpkg@v11
+      with:
+        vcpkgGitCommitId: "f6a5d4e8eb7476b8d7fc12a56dff300c1c986131"
+        runVcpkgInstall: true
+    - name: Build pijul
+      shell: bash
+      run: |
+        export LIB=${VCPKG_INSTALLED_DIR}/x64-windows-static-md/lib
+        export OPENSSL_DIR=${VCPKG_INSTALLED_DIR}/x64-windows-static-md
+        cargo install pijul --version ${{ inputs.version }} --root . --locked
+        cp bin/pijul.exe pijul.exe
+    - name: Build pijul-with-git
+      shell: bash
+      run: |
+        export LIB=${VCPKG_INSTALLED_DIR}/x64-windows-static-md/lib
+        export OPENSSL_DIR=${VCPKG_INSTALLED_DIR}/x64-windows-static-md
+        cargo install pijul --version ${{ inputs.version }} --root . --locked --features git
+        cp bin/pijul.exe pijul-with-git.exe
