@@ -31,18 +31,21 @@ jobs:
         run: |
           latest_version="${{ steps.check.outputs.latest-version }}"
           latest_release=$(curl https://api.github.com/repos/boringcactus/pijul-windows-builds/releases/latest | jq -r .tag_name)
+          echo "latest-release=$latest_release"
           if [ "$latest_version" != "$latest_release" ]; then
             echo "do-build=yes" | tee -a $GITHUB_OUTPUT
           else
             echo "do-build=no" | tee -a $GITHUB_OUTPUT
           fi
 
-  build-windows:
+  build:
     runs-on: windows-latest
     needs: check
     if: needs.check.outputs.do-build == 'yes'
 
     steps:
+      - name: checkout
+        uses: actions/checkout@v3
       - name: build
         uses: ./.github/actions/build
         with:

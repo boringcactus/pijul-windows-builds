@@ -1,9 +1,12 @@
 name: Test The Setup When It Changes
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
+    paths:
+      - ".github/actions/*/action.yml"
 
 jobs:
   build:
