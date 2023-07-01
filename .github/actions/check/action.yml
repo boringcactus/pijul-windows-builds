@@ -7,7 +7,7 @@ outputs:
 runs:
   using: "composite"
   steps:
-    - id: test
+    - id: get
       shell: bash
       run: |
         latest_version=$(curl https://raw.githubusercontent.com/rust-lang/crates.io-index/master/pi/ju/pijul | jq --slurp '.[-1].vers' --raw-output)
