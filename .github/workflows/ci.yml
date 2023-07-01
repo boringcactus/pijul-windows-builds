@@ -6,21 +6,15 @@ on:
       - main
 
 jobs:
-  check:
-    runs-on: ubuntu-latest
-    outputs:
-      latest-version: ${{ steps.check.outputs.latest-version }}
-
-    steps:
-      - uses: actions/checkout@v3
-      - id: check
-        uses: ./.github/actions/check
-
   build:
-    needs: check
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/build
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: check
+        id: check
+        uses: ./.github/actions/check
+      - name: build
+        uses: ./.github/actions/build
         with:
-          version: ${{ needs.check.outputs.latest-version }}
+          version: ${{ steps.check.outputs.latest-version }}
