@@ -1,0 +1,28 @@
+name: Test The Setup When It Changes
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      do_build: ${{ steps.test.outputs.do_build }}
+      latest_version: ${{ steps.test.outputs.latest_version }}
+
+    steps:
+      - id: test
+        run: |
+          cargo search pijul
+          cargo search pijul | head -1
+          cargo search pijul | head -1 | awk -F'"' '{ print $2; }'
+          latest_version=$(cargo search pijul | head -1 | awk -F'"' '{ print $2; }')
+          echo "latest_version=$latest_version" | tee -a $GITHUB_OUTPUT
+
+  build:
+    needs: check
+    uses: ./.github/workflows/build.yml
+    with:
+      version: ${{ needs.check.outputs.latest_version }}
