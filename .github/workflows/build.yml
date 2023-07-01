@@ -8,6 +8,7 @@ on:
 env:
   CARGO_TERM_COLOR: always
   VCPKG_DEFAULT_TRIPLET: x64-windows-static-md
+  VCPKG_INSTALLED_DIR: ${{ github.workspace }}/vcpkg_installed
 
 jobs:
   build:
