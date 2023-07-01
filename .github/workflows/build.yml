@@ -7,6 +7,7 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  VCPKG_DEFAULT_TRIPLET: x64-windows-static-md
 
 jobs:
   build:
@@ -15,10 +16,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Install vcpkg deps
-        shell: bash
-        run: |
-          $VCPKG_INSTALLATION_ROOT/vcpkg.exe install --triplet=x64-windows-static-md xxhash zstd openssl openssl-windows
+      - uses: lukka/run-vcpkg@v11
+        with:
+          runVcpkgInstall: true
 
       - name: Build pijul
         shell: bash
@@ -32,4 +32,3 @@ jobs:
         with:
           name: pijul.exe
           path: bin/pijul.exe
-  
