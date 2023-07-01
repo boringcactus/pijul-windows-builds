@@ -14,16 +14,17 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v3
-      - uses: ./.github/actions/build
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: build
+        uses: ./.github/actions/build
         with:
           version: ${{ inputs.version }}
-
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: pijul.exe
           path: pijul.exe
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: pijul-with-git.exe
           path: pijul-with-git.exe
