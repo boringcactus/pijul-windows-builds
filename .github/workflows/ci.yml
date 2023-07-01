@@ -15,10 +15,7 @@ jobs:
     steps:
       - id: test
         run: |
-          cargo search pijul
-          cargo search pijul | head -1
-          cargo search pijul | head -1 | awk -F'"' '{ print $2; }'
-          latest_version=$(cargo search pijul | head -1 | awk -F'"' '{ print $2; }')
+          latest_version=$(curl https://raw.githubusercontent.com/rust-lang/crates.io-index/master/pi/ju/pijul | jq --slurp '.[-1].vers' --raw-output)
           echo "latest_version=$latest_version" | tee -a $GITHUB_OUTPUT
 
   build:
