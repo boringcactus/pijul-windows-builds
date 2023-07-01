@@ -21,6 +21,18 @@ jobs:
           vcpkgGitCommitId: "f6a5d4e8eb7476b8d7fc12a56dff300c1c986131"
           runVcpkgInstall: true
 
+      - name: Debug
+        shell: bash
+        run: |
+          echo ${VCPKG_ROOT}:
+          ls $VCPKG_ROOT
+          echo ${VCPKG_ROOT}/installed:
+          ls $VCPKG_ROOT/installed
+          echo ${VCPKG_ROOT}/installed/x64-windows-static-md:
+          ls $VCPKG_ROOT/installed/x64-windows-static-md
+          echo ${VCPKG_ROOT}/installed/x64-windows-static-md/lib:
+          ls $VCPKG_ROOT/installed/x64-windows-static-md/lib
+
       - name: Build pijul
         shell: bash
         run: |
