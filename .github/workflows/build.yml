@@ -18,6 +18,7 @@ jobs:
 
       - uses: lukka/run-vcpkg@v11
         with:
+          vcpkgGitCommitId: "2023.06.20"
           runVcpkgInstall: true
 
       - name: Build pijul
