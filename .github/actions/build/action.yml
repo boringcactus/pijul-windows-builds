@@ -19,7 +19,7 @@ runs:
         echo "CARGO_TARGET_DIR=${{ github.workspace }}/cargo_target" | tee -a "$GITHUB_ENV"
     - uses: lukka/run-vcpkg@v11
       with:
-        vcpkgGitCommitId: "f6a5d4e8eb7476b8d7fc12a56dff300c1c986131"
+        vcpkgGitCommitId: "ef7dbf94b9198bc58f45951adcf1f041fcbc5ea0"
         runVcpkgInstall: true
     - name: Cache Cargo target dir
       uses: actions/cache@v3
