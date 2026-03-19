@@ -15,17 +15,17 @@ jobs:
 
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
       - name: build
         id: build
         uses: ./.github/actions/build
         with:
           version: ${{ inputs.version }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: pijul.exe
           path: pijul.exe
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: ${{ steps.build.outputs.build-with-git-outcome == 'success' }}
         with:
           name: pijul-with-git.exe

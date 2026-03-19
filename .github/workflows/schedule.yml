@@ -23,7 +23,7 @@ jobs:
     
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
       - name: check
         id: check
         uses: ./.github/actions/check
@@ -45,7 +45,7 @@ jobs:
 
     steps:
       - name: checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v6
       - name: build
         uses: ./.github/actions/build
         with:
