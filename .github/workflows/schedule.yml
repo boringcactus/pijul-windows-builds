@@ -57,3 +57,4 @@ jobs:
           file: piju*.exe
           file_glob: true
           tag: ${{ needs.check.outputs.latest-version }}
+          body: "May or may not still match [![the latest pijul version](https://img.shields.io/crates/v/pijul?label=latest+upstream)](https://crates.io/crates/pijul/versions) by the time you’re reading this; these builds are not a particularly high priority for me anymore."
